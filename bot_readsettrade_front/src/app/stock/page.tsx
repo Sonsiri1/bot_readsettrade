@@ -63,7 +63,7 @@ const AnalystConsensusPage = () => {
         </select>
         <Link href={`/stock/${symbol}`} className="flex justify-center items-center">
           <button className="group flex cursor-pointer items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-slate-400 transition-all duration-300 hover:border-[#00d4aa]/50 hover:bg-[#00d4aa]/5 hover:text-[#00d4aa]">
-            รายละเอียด 55555ffdfd
+            รายละเอียด
           </button>
         </Link>
       </div>
