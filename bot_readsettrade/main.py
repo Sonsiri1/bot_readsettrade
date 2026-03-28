@@ -12,5 +12,5 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(analysts_router, prefix="/api", tags=["Stocks"])
+app.include_router(analysts_router, prefix="/api", tags=["Analysts"])
 app.include_router(auth_router, prefix="/api", tags=["Auth"])
