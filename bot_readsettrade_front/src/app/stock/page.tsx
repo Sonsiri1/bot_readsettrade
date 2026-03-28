@@ -1,7 +1,7 @@
 "use client"
 import { DataTable } from "@/app/components/analyst/data-table";
 import { Column } from "@/app/components/analyst/column";
-import { Analyst } from "@/app/type/models";
+import { AnalystColumn } from "@/app/type/models";
 import React from "react";
 import SearchWithDetails from "@/app/components/ui/SearchWithDetails";
 import Card from "@/app/components/analyst/Card";
@@ -9,9 +9,10 @@ import Card from "@/app/components/analyst/Card";
 const AnalystConsensusPage = () => {
   const [symbols, setSymbols] = React.useState<string[]>([]);
   const [symbol, setSymbol] = React.useState("AH");
-  const [data, setData] = React.useState<Analyst[]>([]);
+  const [data, setData] = React.useState<AnalystColumn[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
+  console.log(`${API_URL}/api/symbols`);
   // Define an asynchronous function inside the effect
   const fetchData = async () => {
     try {
@@ -20,7 +21,7 @@ const AnalystConsensusPage = () => {
         console.log("Network response was not ok");
       }
       const result = await response.json();
-      const flatData = Object.values(result).flat() as Analyst[];
+      const flatData = Object.values(result).flat() as AnalystColumn[];
       setData(flatData);
       // console.log(flatData);
     } catch (error) {
@@ -49,10 +50,10 @@ const AnalystConsensusPage = () => {
           Analyst Consensus
         </h1>
         <p className="text-zinc-500 text-sm mt-1">ข้อมูลจาก Broker</p>
-        < Card />
+        < Card data={data}/>
       </div>
       < SearchWithDetails symbol={symbol} setSymbol={setSymbol} symbols={symbols}/>
-      <DataTable<Analyst, unknown>
+      <DataTable<AnalystColumn, unknown>
         columns={Column()}
         data={data}
         loading={isLoading}

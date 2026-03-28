@@ -1,7 +1,6 @@
 "use client"
 import { ColumnDef } from "@tanstack/table-core";
-import { Analyst } from "@/app/type/models";
-import Link from "next/link";
+import { AnalystColumn } from "@/app/type/models";
 
 
 const truncateText = (text: string | null | undefined, maxLength: number) => {
@@ -9,10 +8,10 @@ const truncateText = (text: string | null | undefined, maxLength: number) => {
   return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
 };
 
-export const Column = (): ColumnDef<Analyst>[] => [
+export const Column = (): ColumnDef<AnalystColumn>[] => [
   {
     accessorKey: "symbol",
-    header: () => <div className="text-center text-xs text-zinc-400">SYMBOL</div>,
+    header: () => <div className="text-center text-xs text-zinc-400">หลักทรัพย์</div>,
     cell: ({ row }) => (
       <div className="text-center font-semibold text-white">
         {row.original.symbol}
@@ -21,25 +20,25 @@ export const Column = (): ColumnDef<Analyst>[] => [
   },
   {
     accessorKey: "broker",
-    header: () => <div className="text-left text-xs text-zinc-400">BROKER</div>,
+    header: () => <div className="text-left text-xs text-zinc-400">โบรกเกอร์</div>,
     cell: ({ row }) => (
-      <div className="text-sm text-zinc-300">
+      <div className="text-sm text-zinc-300" title={row.original.broker || "ไม่ระบุโบรกเกอร์"}>
         {truncateText(row.original.broker, 20)}
       </div>
     ),
   },
   {
     accessorKey: "analyst",
-    header: () => <div className="text-left text-xs text-zinc-400">ANALYST</div>,
+    header: () => <div className="text-left text-xs text-zinc-400">นักวิเคราะห์</div>,
     cell: ({ row }) => (
-      <div className="text-sm text-zinc-400">
+      <div className="text-sm text-zinc-400" title={row.original.analyst || "ไม่ระบุนักวิเคราะห์"}>
         {truncateText(row.original.analyst, 20)}
       </div>
     ),
   },
   {
     accessorKey: "target_price",
-    header: () => <div className="text-center text-xs text-zinc-400">TARGET</div>,
+    header: () => <div className="text-center text-xs text-zinc-400">ราคาเป้าหมาย</div>,
     cell: ({ row }) => (
       <div className="text-center text-emerald-400 font-medium">
         {row.original.target_price || "-"}
@@ -47,26 +46,36 @@ export const Column = (): ColumnDef<Analyst>[] => [
     ),
   },
   {
-    accessorKey: "upside_downside",
-    header: () => <div className="text-center text-xs text-zinc-400">UPSIDE</div>,
+    accessorKey: "upside_value",
+    header: () => (
+      <div className="text-center text-xs text-zinc-400">อัปไซด์</div>
+    ),
     cell: ({ row }) => {
-      const value = row.original.upside_downside || "-";
-      const isPositive = value.includes("+");
+      const value = row.original.upside_value;
+      const text = row.original.upside_text || "-";
+
+      // เช็คจาก number จริง (ดีที่สุด)
+      const isPositive = typeof value === "number" && value > 0;
+      const isNegative = typeof value === "number" && value < 0;
 
       return (
         <div
           className={`text-center font-medium ${
-            isPositive ? "text-green-400" : "text-red-400"
+            isPositive
+              ? "text-green-400"
+              : isNegative
+              ? "text-red-400"
+              : "text-zinc-400"
           }`}
         >
-          {value}
+          {text}
         </div>
       );
     },
   },
   {
     accessorKey: "recommendation",
-    header: () => <div className="text-center text-xs text-zinc-400">REC</div>,
+    header: () => <div className="text-center text-xs text-zinc-400">คำแนะนำ</div>,
     cell: ({ row }) => {
       const rec = row.original.recommendation || "-";
 
@@ -88,7 +97,7 @@ export const Column = (): ColumnDef<Analyst>[] => [
   },
   {
     accessorKey: "report_date",
-    header: () => <div className="text-center text-xs text-zinc-400">DATE</div>,
+    header: () => <div className="text-center text-xs text-zinc-400">วันที่รายงาน</div>,
     cell: ({ row }) => (
       <div className="text-center text-zinc-500 text-xs">
         {row.original.report_date || "-"}

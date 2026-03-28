@@ -1,17 +1,17 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Analyst } from "@/app/type/models";
+import { DetailAnalyst } from "@/app/type/models";
 import { ArrowLeft } from "lucide-react"; //icon
 
 export default function DetailPage() {
   const { symbol } = useParams();
-  const [data, setData] = useState<Analyst[]>([]);
+  const [data, setData] = useState<DetailAnalyst[]>([]);
 
   const router = useRouter();
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   useEffect(() => {
-    fetch(`${API_URL}/api/analysts/${symbol}`)
+    fetch(`${API_URL}/api/analysts/detail/${symbol}`)
       .then(res => res.json())
       .then(setData);
   }, [symbol]);
@@ -93,7 +93,7 @@ export default function DetailPage() {
                   </div>
                   <div>
                     <div className="mb-1 text-[10px] font-bold uppercase tracking-widest text-slate-500">ส่วนต่างราคา (Upside)</div>
-                    <div className="text-3xl font-black text-[#00d4aa]">{item.upside_downside}%</div>
+                    <div className="text-3xl font-black text-[#00d4aa]">{item.upside_value !== null ? item.upside_value.toFixed(2) : '-'}</div>
                   </div>
                 </div>
 
@@ -121,11 +121,11 @@ export default function DetailPage() {
                       <h4 className="border-b border-white/5 pb-2 text-[10px] font-bold uppercase tracking-wider text-slate-500">กำไรต่อหุ้น (บาท)</h4>
                       <div className="space-y-2">
                         <div>
-                          <div className="font-mono text-[10px] text-slate-400 uppercase">ปี 2569E</div>
+                          <div className="font-mono text-[10px] text-slate-400 uppercase">ปี 2569F</div>
                           <div className="text-lg font-bold text-white">{item.eps_2569 || '-'}</div>
                         </div>
                         <div>
-                          <div className="font-mono text-[10px] text-slate-400 uppercase">ปี 2570E</div>
+                          <div className="font-mono text-[10px] text-slate-400 uppercase">ปี 2570F</div>
                           <div className="text-lg font-bold text-white">{item.eps_2570 || '-'}</div>
                         </div>
                       </div>
@@ -148,7 +148,7 @@ export default function DetailPage() {
 
                     {/* ปันผลคาดการณ์ */}
                     <div className="flex flex-col justify-center rounded-xl border border-blue-500/20 bg-blue-500/10 p-4 text-center">
-                      <h4 className="mb-2 text-[10px] font-bold italic text-blue-400 uppercase">อัตราปันผล (Yield)</h4>
+                      <h4 className="mb-2 text-[10px] font-bold text-blue-400 uppercase">อัตราปันผล</h4>
                       <div className="text-lg font-black text-blue-300">
                         {item.dividend_2569}% / {item.dividend_2570}%
                       </div>
