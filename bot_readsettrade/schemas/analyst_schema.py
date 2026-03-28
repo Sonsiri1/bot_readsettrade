@@ -1,8 +1,10 @@
+from numpy import number
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
 
 class Analyst(BaseModel):
+    id: int
     symbol: str
     broker: str
     analyst: Optional[str] = None

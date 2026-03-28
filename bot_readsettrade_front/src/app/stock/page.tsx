@@ -3,13 +3,14 @@ import { DataTable } from "@/app/components/analyst/data-table";
 import { Column } from "@/app/components/analyst/column";
 import { Analyst } from "@/app/type/models";
 import React from "react";
-import Link from "next/link";
- 
+import SearchWithDetails from "@/app/components/ui/SearchWithDetails";
+import Card from "@/app/components/analyst/Card";
+
 const AnalystConsensusPage = () => {
+  const [symbols, setSymbols] = React.useState<string[]>([]);
   const [symbol, setSymbol] = React.useState("AH");
   const [data, setData] = React.useState<Analyst[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
-  const [symbols, setSymbols] = React.useState<string[]>([]);
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   // Define an asynchronous function inside the effect
   const fetchData = async () => {
@@ -48,25 +49,9 @@ const AnalystConsensusPage = () => {
           Analyst Consensus
         </h1>
         <p className="text-zinc-500 text-sm mt-1">ข้อมูลจาก Broker</p>
+        < Card />
       </div>
-      <div className="flex justify-between mb-5">
-        <select
-          value={symbol}
-          onChange={(e) => setSymbol(e.target.value)}
-          className="bg-zinc-900 text-white border border-zinc-700 px-3 py-1 rounded"
-        >
-          {symbols.map((sym) => (
-            <option key={sym} value={sym}>
-              {sym}
-            </option>
-          ))}
-        </select>
-        <Link href={`/stock/${symbol}`} className="flex justify-center items-center">
-          <button className="group flex cursor-pointer items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-slate-400 transition-all duration-300 hover:border-[#00d4aa]/50 hover:bg-[#00d4aa]/5 hover:text-[#00d4aa]">
-            รายละเอียด
-          </button>
-        </Link>
-      </div>
+      < SearchWithDetails symbol={symbol} setSymbol={setSymbol} symbols={symbols}/>
       <DataTable<Analyst, unknown>
         columns={Column()}
         data={data}
