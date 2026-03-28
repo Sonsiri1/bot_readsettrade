@@ -1,6 +1,7 @@
 import bcrypt
 from models.user_model import User
 from fastapi import HTTPException
+from jose import jwt
 
 def register_user(db, username, password):
     # check ซ้ำ
@@ -25,23 +26,32 @@ def register_user(db, username, password):
 
     return user
 
+from datetime import datetime, timedelta
+
+SECRET_KEY = "your-secret-key"
+ALGORITHM = "HS256"
+
+def create_token(data: dict):
+    to_encode = data.copy()
+    to_encode["exp"] = datetime.utcnow() + timedelta(hours=2)
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 def login_user(db, username, password):
     user = db.query(User).filter(User.username == username).first()
 
     if not user:
         return None
 
-    try:
-        if not bcrypt.checkpw(
-            password.encode('utf-8'),
-            user.password_hash.encode('utf-8')
-        ):
-            return None
-    except Exception as e:
-        print("bcrypt error:", e)
+    if not bcrypt.checkpw(
+        password.encode('utf-8'),
+        user.password_hash.encode('utf-8')
+    ):
         return None
+
+    token = create_token({
+        "sub": user.username
+    })
 
     return {
         "username": user.username,
-        "token": "fake-token"
+        "token": token   # ✅ ใช้ชื่อเดียว
     }

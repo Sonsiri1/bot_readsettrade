@@ -1,9 +1,8 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from 'next/navigation';
-import Link from "next/link";
 
-const HomeLoginPage = () => {
+const RegisterPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -11,25 +10,21 @@ const HomeLoginPage = () => {
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const route = useRouter();
-  const handleClick = async (username: string, password: string) => {
-    const res = await fetch(`${API_URL}/api/login`, {
+  const handleClick = async (username: string, password_hash: string) => {
+    const res = await fetch(`${API_URL}/api/register`, {
       method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        credentials: "include",
       },
-      credentials: "include",
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({ username, password_hash }),
     });
 
     if (res.ok) {
-      const data = await res.json();
-      const token = data.token;
-      localStorage.setItem('jwt', token);
-      alert("ล็อคอินสำเร็จ!");
-      route.push('/stock');
+      alert("สมัครสมาชิกสำเร็จ! กรุณาล็อคอินเพื่อเข้าใช้งาน");
+      route.push('/');
     } else {
-      setError("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง กรุณาลองใหม่!");
-      console.log('ล็อคอินไม่ผ่าน');
+      setError("ชื่อผู้ใช้ซ้ำ กรุณาลองใหม่!");
+      console.log('สมัครสมาชิกไม่ผ่าน');
     }
   }
 
@@ -70,8 +65,8 @@ const HomeLoginPage = () => {
           {/* Form Card */}
           <div className="border border-white/10 bg-white/[0.02] backdrop-blur-xl p-8 shadow-2xl animate-in fade-in zoom-in-95 duration-500 delay-150 fill-mode-both">
             <div className="mb-6">
-              <div className="text-[10px] text-[#00d4aa] tracking-[0.2em] mb-1 font-semibold">LOGIN</div>
-              <h1 className="font-sans text-2xl font-semibold text-white tracking-tight">เข้าสู่ระบบ</h1>
+              <div className="text-[10px] text-[#00d4aa] tracking-[0.2em] mb-1 font-semibold">Register</div>
+              <h1 className="font-sans text-2xl font-semibold text-white tracking-tight">สมัครสมาชิก</h1>
             </div>
 
             <div className="space-y-4 mb-4">
@@ -113,17 +108,16 @@ const HomeLoginPage = () => {
                     {showPassword ? "ซ่อน" : "แสดง"}
                   </button>
                 </div>
-                {error && <p className="text-red-600 text-xs mt-2">{error}</p>}
+                {error && <p className="mt-2 text-xs text-red-500">{error}</p>}
               </div>
             </div>
 
             <button onClick={() => handleClick(username, password)} type="submit" className="w-full bg-[#00d4aa] hover:bg-[#00f0c0] text-[#0a0e1a] py-3.5 text-xs font-bold tracking-[0.15em] transition-all hover:-translate-y-0.5 active:translate-y-0 hover:shadow-2xl cursor-pointer">
-              เข้าสู่ระบบ
+              สมัครสมาชิก
             </button>
 
             <div className="mt-6 pt-6 border-t border-white/5 flex justify-between items-center text-[10px] text-white/20">
               <span>SET · mai · TFEX</span>
-              <Link href="/register" className="text-[#00d4aa] hover:text-[#00f0c0] transition-colors">สมัครสมาชิก</Link>
             </div>
           </div>
         </div>
@@ -131,4 +125,4 @@ const HomeLoginPage = () => {
     </div>
   );
 }
-export default HomeLoginPage
+export default RegisterPage

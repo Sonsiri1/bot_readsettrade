@@ -83,7 +83,7 @@ export default function DetailPage() {
               </div>
 
               {/* ตารางข้อมูลเชิงลึก */}
-              <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
+              <div className="grid grid-cols-4 gap-4">
                 
                 {/* ราคาเป้าหมายและ Upside */}
                 <div className="flex flex-col justify-center rounded-2xl border border-white/10 bg-gradient-to-br from-white/10 to-white/5 p-6 lg:col-span-1 shadow-xl shadow-black/20">
@@ -103,7 +103,7 @@ export default function DetailPage() {
                     
                     {/* กำไรสุทธิ */}
                     <div className="space-y-4">
-                      <h4 className="border-b border-white/5 pb-2 text-[10px] font-bold uppercase tracking-wider text-slate-500">กำไรสุทธิ (ล้านบาท)</h4>
+                      <h4 className="border-b border-white/5 pb-2 text-[10px] font-bold  text-slate-500">กำไรสุทธิ (ล้านบาท)</h4>
                       <div className="space-y-2">
                         <div>
                           <div className="font-mono text-[10px] text-slate-400 uppercase">ปี 2569E</div>
@@ -118,14 +118,14 @@ export default function DetailPage() {
 
                     {/* กำไรต่อหุ้น */}
                     <div className="space-y-4">
-                      <h4 className="border-b border-white/5 pb-2 text-[10px] font-bold uppercase tracking-wider text-slate-500">กำไรต่อหุ้น (บาท)</h4>
+                      <h4 className="border-b border-white/5 pb-2 text-[10px] font-bold  text-slate-500">กำไรต่อหุ้น (บาท)</h4>
                       <div className="space-y-2">
                         <div>
-                          <div className="font-mono text-[10px] text-slate-400 uppercase">ปี 2569F</div>
+                          <div className="font-mono text-[10px] text-slate-400 uppercase">ปี 2569E</div>
                           <div className="text-lg font-bold text-white">{item.eps_2569 || '-'}</div>
                         </div>
                         <div>
-                          <div className="font-mono text-[10px] text-slate-400 uppercase">ปี 2570F</div>
+                          <div className="font-mono text-[10px] text-slate-400 uppercase">ปี 2570E</div>
                           <div className="text-lg font-bold text-white">{item.eps_2570 || '-'}</div>
                         </div>
                       </div>
@@ -133,26 +133,34 @@ export default function DetailPage() {
 
                     {/* อัตราส่วนทางการเงิน */}
                     <div className="space-y-4">
-                      <h4 className="border-b border-white/5 pb-2 text-[10px] font-bold uppercase tracking-wider text-slate-500">ความคุ้มค่า (เท่า)</h4>
-                      <div className="space-y-3">
-                        <div className="flex items-center justify-between">
-                          <span className="font-mono text-[10px] text-slate-400">P/E 69-70</span>
-                          <span className="text-sm font-bold text-white">{item.pe_2569}/{item.pe_2570}</span>
+                      <h4 className="border-b mt-[0.5px] border-white/5 pb-2 text-[10px] font-bold  text-slate-500">ความคุ้มค่า (เท่า)</h4>
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-4">
+                          <span className="font-mono text-[10px] text-slate-400">P/E 69 :</span>
+                          <span className="text-sm font-bold text-white">{item.pe_2569}</span>
                         </div>
-                        <div className="flex items-center justify-between">
-                          <span className="font-mono text-[10px] text-slate-400">P/BV 69-70</span>
-                          <span className="text-sm font-bold text-white">{item.pbv_2569}/{item.pbv_2570}</span>
+                        <div className="flex items-center gap-4">
+                          <span className="font-mono text-[10px] text-slate-400">P/E 70 :</span>
+                          <span className="text-sm font-bold text-white">{item.pe_2570}</span>
+                        </div>
+                        <div className="flex items-center gap-4">
+                          <span className="font-mono text-[10px] text-slate-400">P/BV 69 :</span>
+                          <span className="text-sm font-bold text-white">{item.pbv_2569}</span>
+                        </div>
+                        <div className="flex items-center gap-4">
+                          <span className="font-mono text-[10px] text-slate-400">P/BV 70 :</span>
+                          <span className="text-sm font-bold text-white">{item.pbv_2570}</span>
                         </div>
                       </div>
                     </div>
 
                     {/* ปันผลคาดการณ์ */}
-                    <div className="flex flex-col justify-center rounded-xl border border-blue-500/20 bg-blue-500/10 p-4 text-center">
+                    <div className="flex w-full flex-col justify-center rounded-xl border border-blue-500/20 bg-blue-500/10 p-4 text-center">
                       <h4 className="mb-2 text-[10px] font-bold text-blue-400 uppercase">อัตราปันผล</h4>
                       <div className="text-lg font-black text-blue-300">
-                        {item.dividend_2569}% / {item.dividend_2570}%
+                        30.69%, 40.55%
                       </div>
-                      <div className="mt-1 text-[9px] text-blue-400/50 uppercase">ประมาณการปี 2569-70</div>
+                      <div className="mt-1 text-[9px] text-blue-400/50 uppercase">ประมาณการปี 69-70</div>
                     </div>
 
                   </div>
