@@ -72,3 +72,8 @@ async def get_me(request: Request):
     return {
         "username": payload.get("sub"),
     }
+
+@router.post("/logout")
+def logout(response: Response):
+    response.delete_cookie("jwt")
+    return {"msg": "logout success"}

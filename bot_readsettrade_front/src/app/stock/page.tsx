@@ -5,6 +5,7 @@ import { AnalystColumn } from "@/app/type/models";
 import React from "react";
 import SearchWithDetails from "@/app/components/ui/SearchWithDetails";
 import Card from "@/app/components/analyst/Card";
+import LogOutButton from "@/app/components/ui/logout";
 
 const AnalystConsensusPage = () => {
   const [symbols, setSymbols] = React.useState<string[]>([]);
@@ -46,10 +47,17 @@ const AnalystConsensusPage = () => {
       <div className="absolute top-[-100px] right-[20%] w-[400px] h-[400px] rounded-full bg-[#00d4aa]/10 blur-[100px] pointer-events-none" />
       <div className="absolute bottom-[-100px] left-[10%] w-[400px] h-[400px] rounded-full bg-[#00d4aa]/5 blur-[100px] pointer-events-none" />
       <div className="mb-6">
-        <h1 className="text-xl font-semibold text-white font-mono tracking-tight">
-          Analyst Consensus
-        </h1>
-        <p className="text-zinc-500 text-sm mt-1">ข้อมูลจาก Broker</p>
+        <div className="flex justify-between">
+          <div>
+            <h1 className="text-xl font-semibold text-white font-mono tracking-tight">
+              Analyst Consensus
+            </h1>
+            <p className="text-zinc-500 text-sm mt-1">ข้อมูลจาก Broker</p>
+          </div>
+          
+          <LogOutButton />
+        </div>
+        
         < Card data={data}/>
       </div>
       < SearchWithDetails symbol={symbol} setSymbol={setSymbol} symbols={symbols}/>

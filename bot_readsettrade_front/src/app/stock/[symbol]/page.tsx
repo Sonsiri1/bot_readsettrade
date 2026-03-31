@@ -2,7 +2,8 @@
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { DetailAnalyst } from "@/app/type/models";
-import { ArrowLeft } from "lucide-react"; //icon
+import { ArrowLeft, LogOut } from "lucide-react"; //icon
+import LogOutButton from "@/app/components/ui/logout";
 
 export default function DetailPage() {
   const { symbol } = useParams();
@@ -29,14 +30,14 @@ export default function DetailPage() {
       <div className="relative z-10 mx-auto w-full max-w-5xl">
         
         {/* ปุ่ม */}
-        <div className="mb-6">
+        <div className="flex justify-between mb-6">
           <button 
             onClick={() => router.back()}
-            className="group flex cursor-pointer items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-slate-400 transition-all duration-300 hover:border-[#00d4aa]/50 hover:bg-[#00d4aa]/5 hover:text-[#00d4aa]"
+            className="flex cursor-pointer items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-slate-400 hover:border-[#00d4aa]/50 hover:bg-[#00d4aa]/5 hover:text-[#00d4aa]"
           >
-            <ArrowLeft size={18} className="transition-transform group-hover:-translate-x-1" />
             <span className="text-sm font-bold">ย้อนกลับ</span>
           </button>
+          <LogOutButton />
         </div>
 
         {/* หัวข้อหลัก */}

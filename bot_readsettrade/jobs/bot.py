@@ -442,22 +442,32 @@ def scrape_symbol(driver, symbol):
 # ควบคุมทั้งหมด)
 def start_bot():
     # อ่านรายชื่อหุ้น จากไฟล์ แล้ว save
+    # db = SessionLocal()
+    # result = db.execute(text("SELECT symbol FROM companies WHERE symbol IS NOT NULL"))
+    # symbols = [row[0] for row in result.fetchall()]
     stocks_file = os.getenv("STOCKS_FILE", "stocks.txt")
 
     # อ่าน symbol จากไฟล์
     with open(stocks_file, "r") as f:
+        # ข้ามบรรทัดว่าง และทำให้เป็นตัวใหญ่หมด
         symbols = [line.strip().upper() for line in f if line.strip()]
 
     driver = get_driver()
+    success_symbol = 0
+    failed_symbol = 0
+    total_symbol = len(symbols)
 
     try:
         for symbol in symbols:
+            # ดึงข้อมูลจากเว็บ
             records = scrape_symbol(driver, symbol)
 
             if records:
                 save_to_db(records)
+                success_symbol += 1
             else:
-                print(f"{symbol}: ⚠️ ไม่มีข้อมูล")
+                print(f"{symbol}: ไม่มีข้อมูล")
+                failed_symbol += 1
 
             time.sleep(1)
 
@@ -465,3 +475,7 @@ def start_bot():
         # ปิด browser ทุกครั้งไม่งั้นจะค้าง
         driver.quit()
         print("\nปิด browser")
+        # สรุปผล
+        print(f"ทั้งหมด: {total_symbol} ตัว")
+        print(f"สำเร็จ: {success_symbol} ตัว")
+        print(f"ไม่สำเร็จ: {failed_symbol} ตัว")
