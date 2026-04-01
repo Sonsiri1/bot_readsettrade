@@ -8,7 +8,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "https://bot-readsettrade-frontend.onrender.com"],
+    allow_origins=["http://localhost:3000", "https://bot-readsettrade.vercel.app/"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
