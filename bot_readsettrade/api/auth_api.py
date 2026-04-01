@@ -36,7 +36,8 @@ def login_user(user: UserLogin, response: Response, db: Session = Depends(get_db
         value=token,
         httponly=True,
         samesite="None", # localhost ใช้ "Lax"
-        secure=True  # localhost ใช้ False
+        secure=True,  # localhost ใช้ False
+        path="/",
     )
 
     return {
