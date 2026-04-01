@@ -9,11 +9,11 @@ const RegisterPage = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL;
+  // const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const route = useRouter();
   const handleClick = async (username: string, password: string) => {
     try {
-      const res = await fetch(`${API_URL}/api/register`, {
+      const res = await fetch(`/api/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json", // ทำให้ Backend รู้ JSON
