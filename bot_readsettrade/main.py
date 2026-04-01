@@ -8,7 +8,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "https://bot-readsettrade.vercel.app/"],
+    allow_origins=["http://localhost:3000", "https://bot-readsettrade.vercel.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -28,7 +28,7 @@ def start_scheduler():
 
     # ตั้งเวลา
     schedule.every().day.at("19:00").do(run_bot)
-    schedule.every().day.at("23:00").do(run_bot)
+    schedule.every().day.at("23:45").do(run_bot)
 
     # loop ตลอด
     while True:
