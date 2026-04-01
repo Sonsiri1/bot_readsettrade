@@ -39,7 +39,7 @@ if __name__ == "__main__":
     # start_bot()
     # รันหลัง 1 ทุ่ม
     schedule.every().day.at("19:00").do(run_bot)
-    schedule.every().day.at("21:00").do(run_bot)
+    schedule.every().day.at("22:00").do(run_bot)
 
     while True:
         schedule.run_pending()
