@@ -94,6 +94,17 @@ const HomeLoginPage = () => {
     }
   };
 
+  const handleUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[^a-zA-Z0-9_]/g, "");
+    const truncatedValue = value.slice(0, 30);
+    setUsername(truncatedValue);
+  };
+
+  const handlePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.slice(0, 20);
+    setPassword(value);
+  };
+
   return (
     <div className="min-h-screen bg-[#0a0e1a] flex flex-col font-mono overflow-hidden relative selection:bg-[#00d4aa]/30">
       
@@ -145,7 +156,7 @@ const HomeLoginPage = () => {
                 </label>
                 <input
                   value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  onChange={handleUsername}
                   type="text"
                   placeholder="username"
                   className="w-full bg-white/5 border border-white/10 text-slate-200 px-4 py-3 text-sm font-mono outline-none transition-all focus:border-[#00d4aa] focus:bg-[#00d4aa]/5 focus:ring-4 focus:ring-[#00d4aa]/5 placeholder:text-white/10"
@@ -161,7 +172,7 @@ const HomeLoginPage = () => {
                 <div className="relative">
                   <input
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={handlePassword}
                     type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
                     className="w-full bg-white/5 border border-white/10 text-slate-200 px-4 py-3 pr-12 text-sm font-mono outline-none transition-all focus:border-[#00d4aa] focus:bg-[#00d4aa]/5 focus:ring-4 focus:ring-[#00d4aa]/5 placeholder:text-white/10"

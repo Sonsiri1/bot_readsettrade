@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from 'next/navigation';
 import Swal from "sweetalert2";
+import Link from "next/link";
 
 const RegisterPage = () => {
   const [username, setUsername] = useState('');
@@ -187,9 +188,9 @@ const RegisterPage = () => {
             >
               สมัครสมาชิก
             </button>
-
             <div className="mt-6 pt-6 border-t border-white/5 flex justify-between items-center text-[10px] text-white/20">
               <span>SET · mai</span>
+              <Link href="/" className="text-[#00d4aa] hover:text-[#00f0c0] transition-colors">เข้าสู่ระบบ</Link>
             </div>
           </div>
         </div>
