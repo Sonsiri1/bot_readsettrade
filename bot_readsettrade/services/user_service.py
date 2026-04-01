@@ -1,3 +1,5 @@
+import os
+
 import bcrypt
 from models.user_model import User
 from fastapi import HTTPException
@@ -28,7 +30,7 @@ def register_user(db, username, password):
 
 from datetime import datetime, timedelta
 
-SECRET_KEY = "your-secret-key"
+SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 
 def create_token(data: dict):
