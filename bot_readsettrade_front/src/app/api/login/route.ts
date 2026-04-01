@@ -19,7 +19,9 @@ export async function POST(req: NextRequest) {
 
   // ดึง jwt จาก backend response cookie
   const setCookie = backendRes.headers.get("set-cookie");
+//   console.log("Set-Cookie from backend:", setCookie);
   const token = setCookie?.match(/jwt=([^;]+)/)?.[1];
+//   console.log("Extracted JWT:", token);
 
   if (!token) {
     return NextResponse.json({ error: "No token" }, { status: 401 });

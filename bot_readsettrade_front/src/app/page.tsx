@@ -9,7 +9,7 @@ const HomeLoginPage = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL;
+  // const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const route = useRouter();
 
   const handleLogin = async (username: string, password: string) => {
@@ -23,7 +23,7 @@ const HomeLoginPage = () => {
       //   },
       // });
 
-      const res = await fetch(`${API_URL}/api/login`, {
+      const res = await fetch(`/api/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
