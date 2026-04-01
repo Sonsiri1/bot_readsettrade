@@ -33,8 +33,11 @@ export async function proxy(req: NextRequest) {
       // }
       
     try {
-      await jwtVerify(token, SECRET_KEY); // ✅ verify ใน proxy เลย ไม่ต้อง call backend
-    } catch {
+      await jwtVerify(token, SECRET_KEY, {
+        algorithms: ["HS256"],
+      });
+    } catch (e) {
+      console.log("jwt error", e);
       return NextResponse.redirect(new URL("/", req.url));
     }
   }
