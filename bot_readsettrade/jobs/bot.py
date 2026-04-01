@@ -267,6 +267,7 @@ def clean_text(val):
 def wait_for_table(driver, symbol):
     for attempt in range(3):
         try:
+            # รอ tbody tr ของตาราง ไม่ใช่แค่รอหน้าโหลด
             WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located(
                     (By.CSS_SELECTOR, "#tableAnalystConcensus tbody tr")
@@ -290,69 +291,126 @@ def save_to_db(records):
     now = datetime.now()
 
     try:
-        for r in records:
+        # เอา symbol ที่ไม่ซ้ำ
+        symbols = list(set(r["symbol"] for r in records))
 
-            db.execute(text("""
-                INSERT INTO analyst_consensus_history (
-                    symbol, broker, analyst,
-                    eps_2569, eps_2570,
-                    profit_2569, profit_2570,
-                    pe_2569, pe_2570,
-                    pbv_2569, pbv_2570,
-                    dividend_2569, dividend_2570,
-                    target_price, upside_value, upside_text,
-                    recommendation, report_date,
-                    scraped_at, batch_time
-                )
-                VALUES (
-                    :symbol, :broker, :analyst,
-                    :eps_2569, :eps_2570,
-                    :profit_2569, :profit_2570,
-                    :pe_2569, :pe_2570,
-                    :pbv_2569, :pbv_2570,
-                    :dividend_2569, :dividend_2570,
-                    :target_price, :upside_value, :upside_text,
-                    :recommendation, :report_date,
-                    :scraped_at, :batch_time
-                )
-            """), {**r, "scraped_at": now, "batch_time": now})
+        for symbol in symbols:
 
-            db.execute(text("""
-                INSERT INTO analyst_consensus (
-                    symbol, broker, analyst,
-                    eps_2569, eps_2570,
-                    profit_2569, profit_2570,
-                    pe_2569, pe_2570,
-                    pbv_2569, pbv_2570,
-                    dividend_2569, dividend_2570,
-                    target_price, upside_value, upside_text,
-                    recommendation, report_date, scraped_at
-                )
-                VALUES (
-                    :symbol, :broker, :analyst,
-                    :eps_2569, :eps_2570,
-                    :profit_2569, :profit_2570,
-                    :pe_2569, :pe_2570,
-                    :pbv_2569, :pbv_2570,
-                    :dividend_2569, :dividend_2570,
-                    :target_price, :upside_value, :upside_text,
-                    :recommendation, :report_date, :scraped_at
-                )
-                ON CONFLICT (symbol, broker)
-                DO UPDATE SET
-                    target_price = EXCLUDED.target_price,
-                    upside_value = EXCLUDED.upside_value,
-                    upside_text = EXCLUDED.upside_text,
-                    recommendation = EXCLUDED.recommendation,
-                    scraped_at = EXCLUDED.scraped_at
-            """), {**r, "scraped_at": now})
+            # ดึงข้อมูลเดิมของ symbol นี้
+            old_rows = db.execute(text("""
+                SELECT * FROM analyst_consensus
+                WHERE symbol = :symbol
+            """), {"symbol": symbol}).mappings().all()
+
+            # map broker → row
+            old_map = {row["broker"]: row for row in old_rows}
+
+            # ข้อมูลใหม่ของ symbol นี้
+            new_rows = [r for r in records if r["symbol"] == symbol]
+
+            changed = False  # flag ว่ามีการเปลี่ยนไหม
+
+            for r in new_rows:
+                broker = r["broker"]
+
+                if broker not in old_map:
+                    # มี broker ใหม่
+                    changed = True
+                else:
+                    old = old_map[broker]
+
+                    # เช็คว่าข้อมูลเปลี่ยนไหม
+                    if (
+                        old["report_date"] != r["report_date"] or
+                        old["target_price"] != r["target_price"] or
+                        old["recommendation"] != r["recommendation"]
+                    ):
+                        changed = True
+
+                # insert หรือ update ข้อมูลใหม่
+                db.execute(text("""
+                    INSERT INTO analyst_consensus (
+                        symbol, broker, analyst,
+                        eps_2569, eps_2570,
+                        profit_2569, profit_2570,
+                        pe_2569, pe_2570,
+                        pbv_2569, pbv_2570,
+                        dividend_2569, dividend_2570,
+                        target_price, upside_value, upside_text,
+                        recommendation, report_date, scraped_at
+                    )
+                    VALUES (
+                        :symbol, :broker, :analyst,
+                        :eps_2569, :eps_2570,
+                        :profit_2569, :profit_2570,
+                        :pe_2569, :pe_2570,
+                        :pbv_2569, :pbv_2570,
+                        :dividend_2569, :dividend_2570,
+                        :target_price, :upside_value, :upside_text,
+                        :recommendation, :report_date, :scraped_at
+                    )
+                    ON CONFLICT (symbol, broker)
+                    DO UPDATE SET
+                        analyst = EXCLUDED.analyst,
+                        eps_2569 = EXCLUDED.eps_2569,
+                        eps_2570 = EXCLUDED.eps_2570,
+                        profit_2569 = EXCLUDED.profit_2569,
+                        profit_2570 = EXCLUDED.profit_2570,
+                        pe_2569 = EXCLUDED.pe_2569,
+                        pe_2570 = EXCLUDED.pe_2570,
+                        pbv_2569 = EXCLUDED.pbv_2569,
+                        pbv_2570 = EXCLUDED.pbv_2570,
+                        dividend_2569 = EXCLUDED.dividend_2569,
+                        dividend_2570 = EXCLUDED.dividend_2570,
+                        target_price = EXCLUDED.target_price,
+                        upside_value = EXCLUDED.upside_value,
+                        upside_text = EXCLUDED.upside_text,
+                        recommendation = EXCLUDED.recommendation,
+                        report_date = EXCLUDED.report_date,
+                        scraped_at = EXCLUDED.scraped_at
+                """), {**r, "scraped_at": now})
+
+            # ถ้ามีการเปลี่ยน บันทึก history
+            if changed:
+                latest_rows = db.execute(text("""
+                    SELECT * FROM analyst_consensus
+                    WHERE symbol = :symbol
+                """), {"symbol": symbol}).mappings().all()
+
+                for row in latest_rows:
+                    db.execute(text("""
+                        INSERT INTO analyst_consensus_history (
+                            symbol, broker, analyst,
+                            eps_2569, eps_2570,
+                            profit_2569, profit_2570,
+                            pe_2569, pe_2570,
+                            pbv_2569, pbv_2570,
+                            dividend_2569, dividend_2570,
+                            target_price, upside_value, upside_text,
+                            recommendation, report_date,
+                            scraped_at, batch_time
+                        )
+                        VALUES (
+                            :symbol, :broker, :analyst,
+                            :eps_2569, :eps_2570,
+                            :profit_2569, :profit_2570,
+                            :pe_2569, :pe_2570,
+                            :pbv_2569, :pbv_2570,
+                            :dividend_2569, :dividend_2570,
+                            :target_price, :upside_value, :upside_text,
+                            :recommendation, :report_date,
+                            :scraped_at, :batch_time
+                        )
+                    """), {**row, "scraped_at": now, "batch_time": now})
+
+                print(f"บันทึก history ของ {symbol}")
 
         db.commit()
-        print(f"✅ save {len(records)} records + history")
+        print(f"บันทึก {len(records)} รายการ")
 
     except Exception as e:
         db.rollback()
-        print("❌ DB ERROR:", e)
+        print("ดาต้าเบสมีปัญหา:", e)
 
     finally:
         db.close()
@@ -377,7 +435,7 @@ def scrape_symbol(driver, symbol):
         table = wait_for_table(driver, symbol)
 
         if not table:
-            print(f"{symbol}: ❌ ไม่เจอ table")
+            print(f"{symbol}: ไม่เจอ table")
             return []
 
     except Exception as e:

@@ -1,31 +1,99 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from 'next/navigation';
+import Swal from "sweetalert2";
 
 const RegisterPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const route = useRouter();
-  const handleClick = async (username: string, password_hash: string) => {
-    const res = await fetch(`${API_URL}/api/register`, {
-      method: 'POST',
-      headers: {
-        credentials: "include",
-      },
-      body: JSON.stringify({ username, password_hash }),
-    });
+  const handleClick = async (username: string, password: string) => {
+    try {
+      const res = await fetch(`${API_URL}/api/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json", // ทำให้ Backend รู้ JSON
+        },
+        body: JSON.stringify({ username, password }),
+      });
 
-    if (res.ok) {
-      alert("สมัครสมาชิกสำเร็จ! กรุณาล็อคอินเพื่อเข้าใช้งาน");
-      route.push('/');
-    } else {
-      setError("ชื่อผู้ใช้ซ้ำ กรุณาลองใหม่!");
-      console.log('สมัครสมาชิกไม่ผ่าน');
+      if (res.ok) {
+        await Swal.fire({
+          title: "สมัครสมาชิกสำเร็จ",
+          text: "กรุณาล็อคอินเพื่อเข้าใช้งาน",
+          icon: "success",
+          timer: 1500,
+          showConfirmButton: false,
+          iconColor: "#00d4aa",
+
+          background: "#0a0e1a",
+          color: "#fff",
+
+          customClass: {
+            popup:
+              "!border-2 !border-[#00d4aa]/60 bg-[#0a0e1a] rounded-xl shadow-[0_0_20px_rgba(0,212,170,0.3)]",
+          },
+        });
+
+        route.push("/");
+      } else {
+        await Swal.fire({
+          title: "สมัครสมาชิกไม่สำเร็จ",
+          text: "ชื่อผู้ใช้ซ้ำ กรุณาลองใหม่!",
+          icon: "error",
+
+          background: "#0a0e1a",
+          color: "#fff",
+          buttonsStyling: false,
+
+          customClass: {
+            popup:
+              "!border-2 !border-red-500/60 bg-[#0a0e1a] rounded-xl",
+            confirmButton:
+              "bg-[#00d4aa] text-black px-5 py-2 rounded-lg",
+          },
+
+          confirmButtonText: "ลองใหม่",
+        });
+
+        console.log("สมัครสมาชิกไม่ผ่าน");
+      }
+    } catch (err) {
+      console.error(err);
+
+      Swal.fire({
+        title: "เกิดข้อผิดพลาด",
+        text: "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้",
+        icon: "error",
+        background: "#0a0e1a",
+        color: "#fff",
+      });
     }
+  };
+
+  const handleUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[^a-zA-Z0-9_]/g, "");
+    const truncatedValue = value.slice(0, 30);
+    setUsername(truncatedValue);
+  };
+
+  const handlePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.slice(0, 20);
+    setPassword(value);
+  };
+
+  const isValidPassword = (password: string) => {
+    return /^(?=.*[A-Za-z])(?=.*\d).{6,}$/.test(password);
+  };
+
+  const isFormValid = () => {
+    return (
+      username.length >= 2 &&
+      isValidPassword(password)
+    );
   }
 
   return (
@@ -79,7 +147,7 @@ const RegisterPage = () => {
                 </label>
                 <input
                   value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  onChange={handleUsername}
                   type="text"
                   placeholder="username"
                   className="w-full bg-white/5 border border-white/10 text-slate-200 px-4 py-3 text-sm font-mono outline-none transition-all focus:border-[#00d4aa] focus:bg-[#00d4aa]/5 focus:ring-4 focus:ring-[#00d4aa]/5 placeholder:text-white/10"
@@ -95,7 +163,7 @@ const RegisterPage = () => {
                 <div className="relative">
                   <input
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={handlePassword}
                     type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
                     className="w-full bg-white/5 border border-white/10 text-slate-200 px-4 py-3 pr-12 text-sm font-mono outline-none transition-all focus:border-[#00d4aa] focus:bg-[#00d4aa]/5 focus:ring-4 focus:ring-[#00d4aa]/5 placeholder:text-white/10"
@@ -108,16 +176,20 @@ const RegisterPage = () => {
                     {showPassword ? "ซ่อน" : "แสดง"}
                   </button>
                 </div>
-                {error && <p className="mt-2 text-xs text-red-500">{error}</p>}
               </div>
             </div>
 
-            <button onClick={() => handleClick(username, password)} type="submit" className="w-full bg-[#00d4aa] hover:bg-[#00f0c0] text-[#0a0e1a] py-3.5 text-xs font-bold tracking-[0.15em] transition-all hover:-translate-y-0.5 active:translate-y-0 hover:shadow-2xl cursor-pointer">
+            <button disabled={!isFormValid()} onClick={() => handleClick(username, password)} type="submit" className={`w-full py-3.5 text-xs font-bold tracking-[0.15em] transition-all
+              ${!isFormValid()
+                ? "bg-gray-600 cursor-not-allowed opacity-50"
+                : "bg-[#00d4aa] hover:bg-[#00f0c0] text-[#0a0e1a] hover:-translate-y-0.5 active:translate-y-0 hover:shadow-2xl cursor-pointer"
+              }`}
+            >
               สมัครสมาชิก
             </button>
 
             <div className="mt-6 pt-6 border-t border-white/5 flex justify-between items-center text-[10px] text-white/20">
-              <span>SET · mai · TFEX</span>
+              <span>SET · mai</span>
             </div>
           </div>
         </div>

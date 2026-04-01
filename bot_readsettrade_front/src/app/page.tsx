@@ -2,36 +2,97 @@
 import { useState } from "react";
 import { useRouter } from 'next/navigation';
 import Link from "next/link";
+import Swal from "sweetalert2";
 
 const HomeLoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const route = useRouter();
-  const handleClick = async (username: string, password: string) => {
-    const res = await fetch(`${API_URL}/api/login`, {
-      method: 'POST',
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({ username, password }),
-    });
 
-    if (res.ok) {
-      const data = await res.json();
-      const token = data.token;
-      localStorage.setItem('jwt', token);
-      alert("ล็อคอินสำเร็จ!");
-      route.push('/stock');
-    } else {
-      setError("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง กรุณาลองใหม่!");
-      console.log('ล็อคอินไม่ผ่าน');
+  const handleLogin = async (username: string, password: string) => {
+    try {
+      // แสดง loading ระหว่างล็อคอิน
+      // Swal.fire({
+      //   title: "กำลังเข้าสู่ระบบ...",
+      //   allowOutsideClick: false,
+      //   didOpen: () => {
+      //     Swal.showLoading();
+      //   },
+      // });
+
+      const res = await fetch(`${API_URL}/api/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        const token = data.token;
+
+        localStorage.setItem("jwt", token);
+
+        await Swal.fire({
+        title: "ล็อคอินสำเร็จ",
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false,
+        iconColor: "#00d4aa",
+
+        allowOutsideClick: false,
+
+        background: "#0a0e1a",
+        color: "#fff",
+
+        customClass: {
+          popup:
+            "!border-2 !border-[#00d4aa] bg-[#0a0e1a] rounded-xl",
+          title: "text-white",
+        },
+      });
+
+      route.push("/stock");
+      } else {
+        await Swal.fire({
+          title: "เข้าสู่ระบบไม่สำเร็จ",
+          text: "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง",
+          icon: "error",
+
+          buttonsStyling: false,
+          // กันคลิกนอกกล่อง
+          allowOutsideClick: false,
+
+          background: "#0a0e1a",
+          color: "#fff",
+
+          customClass: {
+            popup: "!border-2 !border-[#00d4aa] bg-[#0a0e1a] rounded-xl",
+
+
+            confirmButton: "bg-[#00d4aa]/90 hover:bg-[#00d4aa] text-black font-semibold px-5 py-2 rounded-lg shadow-lg transition cursor-pointer",
+          },
+
+          confirmButtonText: "ลองใหม่",
+        });
+
+        console.log("ล็อคอินไม่ผ่าน");
+      }
+    } catch (error) {
+      console.error(error);
+
+      Swal.fire({
+        title: "เกิดข้อผิดพลาด",
+        text: "ไม่สามารถเชื่อมต่อได้",
+        icon: "error",
+      });
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-[#0a0e1a] flex flex-col font-mono overflow-hidden relative selection:bg-[#00d4aa]/30">
@@ -113,16 +174,15 @@ const HomeLoginPage = () => {
                     {showPassword ? "ซ่อน" : "แสดง"}
                   </button>
                 </div>
-                {error && <p className="text-red-600 text-xs mt-2">{error}</p>}
               </div>
             </div>
 
-            <button onClick={() => handleClick(username, password)} type="submit" className="w-full bg-[#00d4aa] hover:bg-[#00f0c0] text-[#0a0e1a] py-3.5 text-xs font-bold tracking-[0.15em] transition-all hover:-translate-y-0.5 active:translate-y-0 hover:shadow-2xl cursor-pointer">
+            <button onClick={() => handleLogin(username, password)} type="submit" className="w-full bg-[#00d4aa] hover:bg-[#00f0c0] text-[#0a0e1a] py-3.5 text-xs font-bold tracking-[0.15em] transition-all hover:-translate-y-0.5 active:translate-y-0 hover:shadow-2xl cursor-pointer">
               เข้าสู่ระบบ
             </button>
 
             <div className="mt-6 pt-6 border-t border-white/5 flex justify-between items-center text-[10px] text-white/20">
-              <span>SET · mai · TFEX</span>
+              <span>SET · mai</span>
               <Link href="/register" className="text-[#00d4aa] hover:text-[#00f0c0] transition-colors">สมัครสมาชิก</Link>
             </div>
           </div>

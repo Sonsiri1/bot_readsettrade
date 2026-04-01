@@ -12,10 +12,27 @@ const LogOutButton = () => {
       text: "คุณต้องการออกจากระบบใช่ไหม",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "ใช่",
       cancelButtonText: "ยกเลิก",
-      confirmButtonColor: "#0F6E56",
-      cancelButtonColor: "#888780",
+      confirmButtonText: "ยืนยัน",
+      // cancelButtonColor: "#888780",
+      // confirmButtonColor: "#00d4aa",
+      buttonsStyling: false,
+      allowOutsideClick: false,
+
+      background: "#0a0e1a",
+      color: "#fff",
+
+      customClass: {
+        popup: "!border-2 !border-[#00d4aa] bg-[#0a0e1a] rounded-xl",
+
+        confirmButton:
+          "bg-[#00d4aa]/90 hover:bg-[#00d4aa] text-black font-semibold px-5 py-2 rounded-lg shadow-lg transition cursor-pointer",
+
+        cancelButton:
+          "bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-5 py-2 rounded-lg border border-zinc-700 transition cursor-pointer mr-2",
+      },
+
+      reverseButtons: true
     });
 
     if (result.isConfirmed) {
@@ -29,7 +46,19 @@ const LogOutButton = () => {
         icon: "success",
         timer: 1500,
         showConfirmButton: false,
-        iconColor: "#0F6E56",
+        iconColor: "#00d4aa",
+
+        background: "#0a0e1a",
+        color: "#fff",
+
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+
+        customClass: {
+          popup:
+            "!border-2 !border-[#00d4aa]/60 bg-[#0a0e1a] rounded-xl shadow-[0_0_20px_rgba(0,212,170,0.3)]",
+          title: "text-white",
+        },
       });
       
       router.push("/");

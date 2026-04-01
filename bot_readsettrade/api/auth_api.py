@@ -14,7 +14,7 @@ def register(user: UserRegister, db: Session = Depends(get_db)):
     return user_service.register_user(
         db,
         user.username,
-        user.password_hash
+        user.password
     )
 
 @router.post("/login")
