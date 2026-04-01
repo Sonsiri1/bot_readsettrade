@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import React from "react";
 
 const LogOutButton = () => {
-  const API_URL = process.env.NEXT_PUBLIC_API_URL;
+  // const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const router = useRouter();
   const handleLogout = async () => {
     const result = await Swal.fire({
@@ -36,9 +36,9 @@ const LogOutButton = () => {
     });
 
     if (result.isConfirmed) {
-      await fetch(`${API_URL}/api/logout`, {
+      await fetch(`/api/logout`, {
         method: "POST",
-        credentials: "include",
+        // credentials: "include",
       });
 
       await Swal.fire({
