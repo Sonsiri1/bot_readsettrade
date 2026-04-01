@@ -33,8 +33,8 @@ def login_user(user: UserLogin, response: Response, db: Session = Depends(get_db
         key="jwt",
         value=token,
         httponly=True,
-        samesite="lax",
-        secure=False  # localhost ใช้ False
+        samesite="None", # localhost ใช้ "Lax"
+        secure=True  # localhost ใช้ False
     )
 
     return {
