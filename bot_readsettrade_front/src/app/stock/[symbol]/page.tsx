@@ -12,7 +12,9 @@ export default function DetailPage() {
   const router = useRouter();
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   useEffect(() => {
-    fetch(`${API_URL}/api/analysts/detail/${symbol}`)
+    fetch(`${API_URL}/api/analysts/detail/${symbol}`,{
+      credentials: "include",
+    })
       .then(res => res.json())
       .then(setData);
   }, [symbol]);

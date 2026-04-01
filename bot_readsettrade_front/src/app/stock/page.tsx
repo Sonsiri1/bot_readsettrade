@@ -17,7 +17,9 @@ const AnalystConsensusPage = () => {
   // Define an asynchronous function inside the effect
   const fetchData = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/analysts/${symbol}`);
+      const response = await fetch(`${API_URL}/api/analysts/${symbol}`,{
+        credentials: "include",
+      });
       if (!response.ok) {
         console.log("Network response was not ok");
       }
@@ -37,7 +39,9 @@ const AnalystConsensusPage = () => {
   }, [symbol]);
 
   React.useEffect(() => {
-    fetch(`${API_URL}/api/symbols`)
+    fetch(`${API_URL}/api/symbols`,{
+      credentials: "include",
+    })
       .then(res => res.json())
       .then(setSymbols);
   }, []);

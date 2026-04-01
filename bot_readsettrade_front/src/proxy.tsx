@@ -7,13 +7,14 @@ export default async function proxy(req: NextRequest) {
   const token = req.cookies.get("jwt")?.value;
 
   const isStock = pathname.startsWith("/stock");
-  const isAuth =
-    pathname === "/" ||
-    pathname.startsWith("/register");
+  const isAuth = pathname === "/" || pathname.startsWith("/register");
 
   // กันไป stock
   if (isStock) {
     try {
+      if (!token) {
+        return NextResponse.redirect(new URL("/", req.url));
+      }
       const res = await fetch(`${API_BASE}/api/auth/me`, {
         headers: {
           cookie: `jwt=${token}`,

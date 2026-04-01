@@ -33,11 +33,6 @@ const HomeLoginPage = () => {
       });
 
       if (res.ok) {
-        const data = await res.json();
-        const token = data.token;
-
-        localStorage.setItem("jwt", token);
-
         await Swal.fire({
         title: "ล็อคอินสำเร็จ",
         icon: "success",
