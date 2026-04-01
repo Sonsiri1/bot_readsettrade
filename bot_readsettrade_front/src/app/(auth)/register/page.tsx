@@ -177,6 +177,11 @@ const RegisterPage = () => {
                     {showPassword ? "ซ่อน" : "แสดง"}
                   </button>
                 </div>
+                {password.length > 0 && !isValidPassword(password) && (
+                  <p className="text-red-400 text-[10px] mt-1">
+                    ต้องมีตัวอักษรและตัวเลขอย่างน้อย 6 ตัว เช่น abc123
+                  </p>
+                )}
               </div>
             </div>
 
