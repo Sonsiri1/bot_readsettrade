@@ -26,9 +26,10 @@ def start_scheduler():
 
     print("บอทพร้อมทำงานแล้ว")
 
+    # UTC คือ 00:00 น. เวลาในไทยจะเป็น 07:00 น.
     # ตั้งเวลา
-    schedule.every().day.at("19:00").do(run_bot)
-    schedule.every().day.at("23:45").do(run_bot)
+    schedule.every().day.at("12:00").do(run_bot) # 19:00 ตามเวลาประเทศไทย
+    schedule.every().day.at("17:30").do(run_bot) # 00:30 ตามเวลาประเทศไทย
 
     # loop ตลอด
     while True:

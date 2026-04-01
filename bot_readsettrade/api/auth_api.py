@@ -1,3 +1,5 @@
+import os
+
 from fastapi import APIRouter, Depends, Request, HTTPException, Response
 from requests import Session
 from schemas.user_schema import UserRegister
@@ -41,7 +43,7 @@ def login_user(user: UserLogin, response: Response, db: Session = Depends(get_db
         "msg": "login success"
     }
 
-SECRET_KEY = "your-secret-key"
+SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 
 def verify_token(token: str):

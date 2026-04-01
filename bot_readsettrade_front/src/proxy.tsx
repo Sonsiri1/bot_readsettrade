@@ -13,14 +13,10 @@ export default async function proxy(req: NextRequest) {
 
   // กันไป stock
   if (isStock) {
-    if (!token) {
-      return NextResponse.redirect(new URL("/", req.url));
-    }
-
     try {
       const res = await fetch(`${API_BASE}/api/auth/me`, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          cookie: `jwt=${token}`,
         },
         cache: "no-store",
       });
