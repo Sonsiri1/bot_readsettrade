@@ -161,7 +161,7 @@ export default function DetailPage() {
                     <div className="flex w-full flex-col justify-center rounded-xl border border-blue-500/20 bg-blue-500/10 p-4 text-center">
                       <h4 className="mb-2 text-[10px] font-bold text-blue-400 uppercase">อัตราปันผล</h4>
                       <div className="text-lg font-black text-blue-300">
-                        30.69%, 40.55%
+                        {item.dividend_2569 !== null ? `${item.dividend_2569}%` : '-'} , {item.dividend_2570 !== null ? `${item.dividend_2570}%` : '-'}
                       </div>
                       <div className="mt-1 text-[9px] text-blue-400/50 uppercase">ประมาณการปี 69-70</div>
                     </div>
